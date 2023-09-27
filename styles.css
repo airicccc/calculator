@@ -1,0 +1,55 @@
+body {
+	font-family: Roboto, sans-serif;
+}
+
+.calculator-body {
+	width: 500px;
+	margin: auto;
+	background-color: black;
+    display: flex;
+    flex-direction: column;
+}
+
+.display {
+	height: 200px;
+	color: white;
+	display: flex;
+	justify-content: flex-end;
+	align-items: flex-end;
+	font-size: 80px;
+    margin: 0 2.7rem;
+}
+
+.keyboard {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-evenly;
+	padding-bottom: 16px;
+}
+.keyboard > button {
+	aspect-ratio: 1 / 1;
+	margin: 6px;
+	width: 20%;
+	border-radius: 50%;
+	font-size: 40px;
+	color: white;
+    background-color: darkslategray;
+    border: 0;
+    font-weight: 00;
+}
+
+#func {
+	background-color: gray;
+	color: black;
+}
+
+#op {
+	background-color: orange;
+    font-weight: 700;
+}
+
+#zero {
+	aspect-ratio: 2 / 1;
+	width: 40%;
+	border-radius: 100px;
+}
