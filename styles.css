@@ -38,8 +38,9 @@ body {
     font-weight: 00;
 }
 
-#func,
-#pm {
+#per,
+#pm,
+#clr {
 	background-color: gray;
 	color: black;
 }

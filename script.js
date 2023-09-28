@@ -3,6 +3,7 @@ let memoryVal = 0;
 let equVal = 0;
 let operator = "";
 let hasDisplay = false;
+let isDecimal = false;
 
 const display = document.querySelector(".display");
 
@@ -35,13 +36,13 @@ function divide(a, b) {
 		return "ERROR";
 	}
 	let result = a / b;
-    if (result > 999_999_999 || result < -999_999_999) {
-        return "ERROR";
-    }
+	if (result > 999_999_999 || result < -999_999_999) {
+		return "ERROR";
+	}
 	let int = result.toString().split(".")[0];
 	console.log(int);
 	let len = int.length;
-	result = result.toFixed(9 - len);
+	result = parseFloat(result.toFixed(9 - len));
 	return result;
 }
 
@@ -80,17 +81,15 @@ function clickOp(event) {
 }
 
 function clickEqu(event) {
-    if (memoryVal == "ERROR") {
+	if (memoryVal == "ERROR") {
 		return;
 	}
 	if (hasDisplay) {
 		if (operator == "") {
-			//case covered
 			memoryVal = displayVal;
 			displayVal = 0;
 			hasDisplay = false;
 		} else {
-			//
 			memoryVal = operate(memoryVal, displayVal, operator);
 			display.textContent = memoryVal;
 			equVal = displayVal;
@@ -103,13 +102,37 @@ function clickEqu(event) {
 	}
 }
 
-function clickPer(event) {}
+function clickPer(event) {
+	if (hasDisplay) {
+        if (displayVal == "ERROR") return;
+		displayVal /= 100;
+		let int = displayVal.toString().split(".")[0];
+		let len = int.length;
+		displayVal = parseFloat(displayVal.toFixed(9 - len));
+        if (Math.abs(displayVal) < 1 / 100_000_000) {
+            displayVal = "ERROR"
+        }
+		display.textContent = displayVal;
+	} else {
+        if (memoryVal == "ERROR") return;
+		memoryVal /= 100;
+        let int = memoryVal.toString().split(".")[0];
+		let len = int.length;
+		memoryVal = parseFloat(memoryVal.toFixed(9 - len));
+        if (Math.abs(memoryVal) < 1 / 100_000_000) {
+            memoryVal = "ERROR"
+        }
+		display.textContent = memoryVal;
+	}
+}
 
 function clickPM(event) {
 	if (hasDisplay) {
+        if (displayVal == "ERROR") return;
 		displayVal *= -1;
 		display.textContent = displayVal;
 	} else {
+        if (memoryVal == "ERROR") return;
 		memoryVal *= -1;
 		display.textContent = memoryVal;
 	}
@@ -122,6 +145,7 @@ function allClear(event) {
 	equVal = 0;
 	operator = "";
 	hasDisplay = false;
+    isDecimal = false;
 }
 
 function clickNum(event) {
@@ -148,5 +172,8 @@ equals.addEventListener("click", clickEqu);
 const plusminus = document.querySelector("#pm");
 plusminus.addEventListener("click", clickPM);
 
-const clear = document.querySelector(".clr");
+const clear = document.querySelector("#clr");
 clear.addEventListener("click", allClear);
+
+const percent = document.querySelector("#per");
+percent.addEventListener("click", clickPer);
