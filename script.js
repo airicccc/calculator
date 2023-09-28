@@ -4,12 +4,18 @@ let equVal = 0;
 let operator = "";
 let hasDisplay = false;
 let isDecimal = false;
+const maxDigits = 9;
+const percentNum = 100;
+const maxVal = 999_999_999;
+const minVal = -999_999_999;
+const maxDisplay = 100_000_000;
+const minDecimal = 1 / 100_000_000;
 
 const display = document.querySelector(".display");
 
 function add(a, b) {
 	let result = a + b;
-	if (result > 999_999_999 || result < -999_999_999) {
+	if (result > maxVal|| result < minVal) {
 		return "ERROR";
 	}
 	return result;
@@ -17,7 +23,7 @@ function add(a, b) {
 
 function subtract(a, b) {
 	let result = a - b;
-	if (result > 999_999_999 || result < -999_999_999) {
+	if (result > maxVal|| result < minVal) {
 		return "ERROR";
 	}
 	return result;
@@ -25,7 +31,7 @@ function subtract(a, b) {
 
 function multiply(a, b) {
 	let result = a * b;
-	if (result > 999_999_999 || result < -999_999_999) {
+	if (result > maxVal|| result < minVal) {
 		return "ERROR";
 	}
 	return result;
@@ -36,14 +42,16 @@ function divide(a, b) {
 		return "ERROR";
 	}
 	let result = a / b;
-	if (result > 999_999_999 || result < -999_999_999) {
+	if (result > maxVal|| result < minVal) {
 		return "ERROR";
 	}
-	let int = result.toString().split(".")[0];
-	console.log(int);
-	let len = int.length;
-	result = parseFloat(result.toFixed(9 - len));
-	return result;
+	return truncate(result);
+}
+
+function truncate(num) {
+	let intPart = num.toString().split(".")[0];
+	let len = intPart.length;
+	return parseFloat(num.toFixed(maxDigits - len));
 }
 
 function operate(num1, num2, op) {
@@ -104,22 +112,16 @@ function clickEqu(event) {
 
 function clickPer(event) {
 	if (hasDisplay) {
-        if (displayVal == "ERROR" | memoryVal == 0) return;
-		displayVal /= 100;
-		let int = displayVal.toString().split(".")[0];
-		let len = int.length;
-		displayVal = parseFloat(displayVal.toFixed(9 - len));
-        if (Math.abs(displayVal) < 1 / 100_000_000) {
+        if (displayVal == "ERROR" | displayVal == 0) return;
+		displayVal = truncate(displayVal / percentNum)
+        if (Math.abs(displayVal) < minDecimal) {
             displayVal = "ERROR"
         }
 		display.textContent = displayVal;
 	} else {
         if (memoryVal == "ERROR" || memoryVal == 0) return;
-		memoryVal /= 100;
-        let int = memoryVal.toString().split(".")[0];
-		let len = int.length;
-		memoryVal = parseFloat(memoryVal.toFixed(9 - len));
-        if (Math.abs(memoryVal) < 1 / 100_000_000) {
+		memoryVal = truncate(memoryVal / percentNum);
+        if (Math.abs(memoryVal) < minDecimal) {
             memoryVal = "ERROR"
         }
 		display.textContent = memoryVal;
@@ -152,7 +154,7 @@ function clickNum(event) {
 	if (memoryVal == "ERROR") {
 		allClear();
 	}
-	if (displayVal < 100_000_000) {
+	if (displayVal < maxDisplay) {
 		displayVal *= 10;
 		displayVal += Number(this.getAttribute("data-val"));
 		display.textContent = displayVal;
