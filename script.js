@@ -7,22 +7,42 @@ let hasDisplay = false;
 const display = document.querySelector(".display");
 
 function add(a, b) {
-	return a + b;
+	let result = a + b;
+	if (result > 999_999_999 || result < -999_999_999) {
+		return "ERROR";
+	}
+	return result;
 }
 
 function subtract(a, b) {
-	return a - b;
+	let result = a - b;
+	if (result > 999_999_999 || result < -999_999_999) {
+		return "ERROR";
+	}
+	return result;
 }
 
 function multiply(a, b) {
-	return a * b;
+	let result = a * b;
+	if (result > 999_999_999 || result < -999_999_999) {
+		return "ERROR";
+	}
+	return result;
 }
 
 function divide(a, b) {
 	if (b == 0) {
 		return "ERROR";
 	}
-	return a / b;
+	let result = a / b;
+    if (result > 999_999_999 || result < -999_999_999) {
+        return "ERROR";
+    }
+	let int = result.toString().split(".")[0];
+	console.log(int);
+	let len = int.length;
+	result = result.toFixed(9 - len);
+	return result;
 }
 
 function operate(num1, num2, op) {
@@ -47,6 +67,7 @@ function clickOp(event) {
 			operator = this.getAttribute("data-op");
 		} else {
 			memoryVal = operate(memoryVal, displayVal, operator);
+			equVal = memoryVal;
 			display.textContent = memoryVal;
 			displayVal = 0;
 			hasDisplay = false;
@@ -59,18 +80,26 @@ function clickOp(event) {
 }
 
 function clickEqu(event) {
+    if (memoryVal == "ERROR") {
+		return;
+	}
 	if (hasDisplay) {
 		if (operator == "") {
+			//case covered
 			memoryVal = displayVal;
 			displayVal = 0;
-			hasDisplay = true;
+			hasDisplay = false;
 		} else {
+			//
 			memoryVal = operate(memoryVal, displayVal, operator);
 			display.textContent = memoryVal;
+			equVal = displayVal;
 			displayVal = 0;
 			hasDisplay = false;
 		}
 	} else if (operator != "") {
+		memoryVal = operate(memoryVal, equVal, operator);
+		display.textContent = memoryVal;
 	}
 }
 
@@ -80,6 +109,9 @@ function clickPM(event) {
 	if (hasDisplay) {
 		displayVal *= -1;
 		display.textContent = displayVal;
+	} else {
+		memoryVal *= -1;
+		display.textContent = memoryVal;
 	}
 }
 
