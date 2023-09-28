@@ -1,8 +1,10 @@
 let displayVal = 0;
 let memoryVal = 0;
+let equVal = 0;
 let operator = "";
+let hasDisplay = false;
 
-const display = document.querySelector(".display")
+const display = document.querySelector(".display");
 
 function add(a, b) {
 	return a + b;
@@ -25,32 +27,94 @@ function divide(a, b) {
 
 function operate(num1, num2, op) {
 	switch (op) {
-		case "+":
+		case "add":
 			return add(num1, num2);
-		case "-":
+		case "sub":
 			return subtract(num1, num2);
-		case "×":
+		case "mul":
 			return multiply(num1, num2);
-		case "÷":
+		case "div":
 			return divide(num1, num2);
 	}
 }
 
+function clickOp(event) {
+	if (hasDisplay) {
+		if (operator == "") {
+			memoryVal = displayVal;
+			displayVal = 0;
+			hasDisplay = false;
+			operator = this.getAttribute("data-op");
+		} else {
+			memoryVal = operate(memoryVal, displayVal, operator);
+			display.textContent = memoryVal;
+			displayVal = 0;
+			hasDisplay = false;
+			operator = this.getAttribute("data-op");
+			console.log(displayVal, memoryVal);
+		}
+	} else {
+		operator = this.getAttribute("data-op");
+	}
+}
+
+function clickEqu(event) {
+	if (hasDisplay) {
+		if (operator == "") {
+			memoryVal = displayVal;
+			displayVal = 0;
+			hasDisplay = true;
+		} else {
+			memoryVal = operate(memoryVal, displayVal, operator);
+			display.textContent = memoryVal;
+			displayVal = 0;
+			hasDisplay = false;
+		}
+	} else if (operator != "") {
+	}
+}
+
+function clickPer(event) {}
+
+function clickPM(event) {
+	if (hasDisplay) {
+		displayVal *= -1;
+		display.textContent = displayVal;
+	}
+}
+
 function allClear(event) {
-    display.textContent = "";
-    displayVal = 0;
+	display.textContent = "";
+	displayVal = 0;
+	memoryVal = 0;
+	equVal = 0;
+	operator = "";
+	hasDisplay = false;
 }
 
 function clickNum(event) {
-    if (displayVal < 100_000_000) {
-        displayVal *= 10;
-        displayVal += Number(this.getAttribute('data-val'));
-        display.textContent = displayVal;
-    }
+	if (memoryVal == "ERROR") {
+		allClear();
+	}
+	if (displayVal < 100_000_000) {
+		displayVal *= 10;
+		displayVal += Number(this.getAttribute("data-val"));
+		display.textContent = displayVal;
+	}
+	hasDisplay = true;
 }
 
 const nums = document.querySelectorAll(".num");
-nums.forEach(num => num.addEventListener("click", clickNum))
+nums.forEach((num) => num.addEventListener("click", clickNum));
+
+const ops = document.querySelectorAll("#op");
+ops.forEach((op) => op.addEventListener("click", clickOp));
+
+const equals = document.querySelector("#equ");
+equals.addEventListener("click", clickEqu);
+
+const plusminus = document.querySelector("#pm");
+plusminus.addEventListener("click", clickPM);
 
 const clear = document.querySelector(".clr");
 clear.addEventListener("click", allClear);

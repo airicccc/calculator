@@ -38,12 +38,14 @@ body {
     font-weight: 00;
 }
 
-#func {
+#func,
+#pm {
 	background-color: gray;
 	color: black;
 }
 
-#op {
+#op,
+#equ {
 	background-color: orange;
     font-weight: 700;
 }
