@@ -104,7 +104,7 @@ function clickEqu(event) {
 
 function clickPer(event) {
 	if (hasDisplay) {
-        if (displayVal == "ERROR") return;
+        if (displayVal == "ERROR" | memoryVal == 0) return;
 		displayVal /= 100;
 		let int = displayVal.toString().split(".")[0];
 		let len = int.length;
@@ -114,7 +114,7 @@ function clickPer(event) {
         }
 		display.textContent = displayVal;
 	} else {
-        if (memoryVal == "ERROR") return;
+        if (memoryVal == "ERROR" || memoryVal == 0) return;
 		memoryVal /= 100;
         let int = memoryVal.toString().split(".")[0];
 		let len = int.length;
