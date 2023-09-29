@@ -18,7 +18,7 @@ function add(a, b) {
 	if (result > maxVal || result < minVal) {
 		return "ERROR";
 	}
-	return result;
+	return truncate(result);
 }
 
 function subtract(a, b) {
@@ -26,7 +26,7 @@ function subtract(a, b) {
 	if (result > maxVal || result < minVal) {
 		return "ERROR";
 	}
-	return result;
+	return truncate(result);
 }
 
 function multiply(a, b) {
@@ -34,7 +34,7 @@ function multiply(a, b) {
 	if (result > maxVal || result < minVal) {
 		return "ERROR";
 	}
-	return result;
+	return truncate(result);
 }
 
 function divide(a, b) {
@@ -49,6 +49,11 @@ function divide(a, b) {
 }
 
 function truncate(num) {
+	if (isDecimal) {
+		let intPart = num.toString().split(".")[0];
+		let len = intPart.length;
+		return parseFloat(num).toFixed(decimalDigits);
+	}
 	let intPart = num.toString().split(".")[0];
 	let len = intPart.length;
 	return parseFloat(num.toFixed(maxDigits - len));
@@ -68,6 +73,8 @@ function operate(num1, num2, op) {
 }
 
 function clickOp(event) {
+	isDecimal = false;
+	decimalDigits = 0;
 	if (hasDisplay) {
 		if (operator == "") {
 			memoryVal = displayVal;
@@ -140,6 +147,34 @@ function clickPM(event) {
 	}
 }
 
+function clickNum(event) {
+	if (memoryVal == "ERROR") {
+		allClear();
+	}
+	if (displayVal.toString().length < maxDigits) {
+		if (isDecimal) {
+			decimalDigits += 1;
+			displayVal =
+				Number(displayVal) +
+				Number(this.getAttribute("data-val")) *
+					Math.pow(10, -1 * decimalDigits);
+			displayVal = truncate(displayVal);
+		} else {
+			displayVal *= 10;
+			displayVal += Number(this.getAttribute("data-val"));
+		}
+		display.textContent = displayVal;
+	}
+	hasDisplay = true;
+}
+
+function addDecimal(event) {
+	if (!isDecimal) {
+		isDecimal = true;
+		display.textContent += ".";
+	}
+}
+
 function allClear(event) {
 	display.textContent = "";
 	displayVal = 0;
@@ -149,23 +184,6 @@ function allClear(event) {
 	hasDisplay = false;
 	isDecimal = false;
 	decimalDigits = 0;
-}
-
-function clickNum(event) {
-	if (memoryVal == "ERROR") {
-		allClear();
-	}
-	if (displayVal.toString().length < maxDigits) {
-		// if (isDecimal) {
-		//     decimalDigits -= 1;
-		//     displayVal += Number(this.getAttribute("data-val")) * Math.pow(10, decimalDigits);
-		//     displayVal = truncate(displayVal)
-		// } else {}
-		displayVal *= 10;
-		displayVal += Number(this.getAttribute("data-val"));
-		display.textContent = displayVal;
-	}
-	hasDisplay = true;
 }
 
 const nums = document.querySelectorAll(".num");
@@ -185,3 +203,6 @@ clear.addEventListener("click", allClear);
 
 const percent = document.querySelector("#per");
 percent.addEventListener("click", clickPer);
+
+const dec = document.querySelector(".dec");
+dec.addEventListener("click", addDecimal);
